@@ -1,22 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styles from './App.module.css';
+import ExchangeWidget from './exchangeWidget/ExchangeWidget';
+import AccountProvider from './common/components/AccountProvider';
+import FlexSpacer from './common/components/FlexSpacer';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AccountProvider>
+      <div className={styles.app}>
+        <FlexSpacer />
+
+        <ExchangeWidget className={styles.exchangeWidget} />
+
+        <FlexSpacer />
+
+        <div className={styles.attributions}>
+          Stock icon by Setyo Ari Wibowo from the Noun Project;
+          Caret icon by olcay kurtulus from the Noun Project
+        </div>
+      </div>
+    </AccountProvider>
   );
 }
 

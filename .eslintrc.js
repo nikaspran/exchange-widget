@@ -11,8 +11,11 @@ module.exports = {
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
+    "max-len": ["error", { "code": 120 }],
     "import/extensions": "off",
-    "react/jsx-filename-extension": ["error", { "extensions": [".tsx", ".jsx"] }]
+    "react/jsx-filename-extension": ["error", { "extensions": [".tsx", ".jsx"] }],
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-props-no-spreading": "off"
   },
   "overrides": [
     {

@@ -1,0 +1,25 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: .5rem;
+
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+
+  color: var(--colorAccent);
+  font-size: var(--fontSizeBase);
+}
+
+.button svg {
+  fill: var(--colorAccent);
+}
+
+.button > * {
+  display: block;
+}
+
+.button > * + * {
+  margin-left: .5rem;
+}

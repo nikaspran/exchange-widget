@@ -1,0 +1,11 @@
+.button {
+  background: var(--backgroundCta);
+  color: #ffffff;
+  padding: .8rem;
+  border: none;
+  border-radius: 100rem; /* absurd value makes corners round for pill-like look */
+  cursor: pointer;
+
+  font-size: var(--fontSizeLg);
+  font-weight: 600;
+}

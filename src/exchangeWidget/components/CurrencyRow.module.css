@@ -1,0 +1,26 @@
+.row {
+}
+
+.top {
+  display: flex;
+}
+
+.sign {
+  font-size: var(--fontSize4Xl);
+}
+
+@supports ( -moz-appearance: none ){ /* Firefox only */
+  .sign {
+    position: relative;
+    left: 2.5rem;
+  }
+}
+
+.input {
+}
+
+.balance {
+  margin-top: 1rem;
+  color: var(--textLight);
+  font-size: var(--fontSizeBase)
+}
