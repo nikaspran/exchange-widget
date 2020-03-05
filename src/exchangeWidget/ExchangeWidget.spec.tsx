@@ -1,6 +1,6 @@
 import React from 'react';
 import { when } from 'jest-when';
-import { render, fireEvent, act } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import ExchangeWidget from './ExchangeWidget';
 import { AccountContext } from '../common/components/AccountProvider';
 import { useLiveRates } from './services/fx';
@@ -48,12 +48,12 @@ describe('<ExchangeWidget />', () => {
 
   it('should default to EUR as the "from" currency', () => {
     const { elements } = renderWithContext();
-    expect(elements.fromCurrency().value).toEqual('EUR');
+    expect(elements.fromCurrency()).toHaveValue('EUR');
   });
 
   it('should default to GBP as the "to" currency', () => {
     const { elements } = renderWithContext();
-    expect(elements.toCurrency().value).toEqual('GBP');
+    expect(elements.toCurrency()).toHaveValue('GBP');
   });
 
   it('should show the balances for both accounts', () => {
@@ -78,10 +78,10 @@ describe('<ExchangeWidget />', () => {
     fireEvent.change(elements.fromAmount(), { target: { value: 10 } });
 
     fireEvent.click(elements.swapButton());
-    expect(elements.fromCurrency().value).toEqual('GBP');
-    expect(elements.fromAmount().value).toEqual('2.00');
-    expect(elements.toCurrency().value).toEqual('EUR');
-    expect(elements.toAmount().value).toEqual('10.00');
+    expect(elements.fromCurrency()).toHaveValue('GBP');
+    expect(elements.fromAmount()).toHaveValue('2.00');
+    expect(elements.toCurrency()).toHaveValue('EUR');
+    expect(elements.toAmount()).toHaveValue('10.00');
   });
 
   it('should automatically pre-convert the "to" currency value when typing into the "from" field', () => {
@@ -90,7 +90,7 @@ describe('<ExchangeWidget />', () => {
       .calledWith(10, { from: 'EUR', to: 'GBP' }).mockReturnValue(2);
     const { elements } = renderWithContext();
     fireEvent.change(elements.fromAmount(), { target: { value: 10 } });
-    expect(elements.toAmount().value).toEqual('2.00');
+    expect(elements.toAmount()).toHaveValue('2.00');
   });
 
   it('should automatically pre-convert the "from" currency value when typing into the "to" field', () => {
@@ -99,13 +99,32 @@ describe('<ExchangeWidget />', () => {
       .calledWith(10, { from: 'GBP', to: 'EUR' }).mockReturnValue(39);
     const { elements } = renderWithContext();
     fireEvent.change(elements.toAmount(), { target: { value: 10 } });
-    expect(elements.fromAmount().value).toEqual('39.00');
+    expect(elements.fromAmount()).toHaveValue('39.00');
   });
 
-  it.skip('should clear the other bucket if amount changed to empty', () => {
+  it('should clear the other bucket if amount changed to empty', () => {
+    const { elements } = renderWithContext();
+    fireEvent.change(elements.fromAmount(), { target: { value: 10 } });
+    fireEvent.change(elements.fromAmount(), { target: { value: '' } });
+    expect(elements.toAmount()).toHaveValue('');
   });
 
-  it.skip('should clear the other bucket if amount changed to 0', () => {
+  it('should clear the other bucket if amount changed to 0', () => {
+    const { elements } = renderWithContext();
+    fireEvent.change(elements.toAmount(), { target: { value: 10 } });
+    fireEvent.change(elements.toAmount(), { target: { value: 0 } });
+    expect(elements.fromAmount()).toHaveValue('');
+  });
+
+  it('should focus the initial currency input first', () => {
+    const { elements } = renderWithContext();
+    expect(elements.fromAmount()).toHaveFocus();
+  });
+
+  it('should switch focus after swapping currencies', () => {
+    const { elements } = renderWithContext();
+    fireEvent.click(elements.swapButton());
+    expect(elements.toAmount()).toHaveFocus();
   });
 
   it.skip('should allow submitting the exchange and show updated balances', () => {

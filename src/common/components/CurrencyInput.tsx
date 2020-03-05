@@ -3,6 +3,7 @@ import React, {
   ChangeEvent,
   useState,
   useEffect,
+  Ref,
 } from 'react';
 import classNames from 'classnames';
 import styles from './CurrencyInput.module.css';
@@ -20,16 +21,17 @@ function toString(maybeNumber: number | undefined) {
   return maybeNumber.toFixed(2);
 }
 
-export default function CurrencyInput({
+// eslint-disable-next-line prefer-arrow-callback
+export default React.forwardRef(function CurrencyInput({
   className,
   value,
   onChange,
   ...otherProps
 }: Override<InputHTMLAttributes<HTMLInputElement>, {
+  className?: string;
   value?: number | undefined;
   onChange?: (value: number | undefined) => unknown;
-  className?: string;
-}>) {
+}>, ref: Ref<HTMLInputElement>) {
   const [stringValue, setStringValue] = useState(toString(value));
 
   function cleanAndReportChange(event: ChangeEvent<HTMLInputElement>) {
@@ -52,6 +54,7 @@ export default function CurrencyInput({
 
   return (
     <input
+      ref={ref}
       size={Math.max(stringValue.length, 1)}
       value={stringValue}
       className={classNames(styles.input, className)}
@@ -59,4 +62,4 @@ export default function CurrencyInput({
       {...otherProps}
     />
   );
-}
+});

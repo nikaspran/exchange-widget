@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import styles from './CurrencyRow.module.css';
 import { Currency } from '../../common/constants';
@@ -16,7 +16,7 @@ export default function CurrencyRow({
   onChangeCurrency,
   onChangeAmount,
   onFocus,
-  autoFocus,
+  focus = false,
 }: {
   className?: string;
   currency: Currency;
@@ -25,9 +25,16 @@ export default function CurrencyRow({
   onChangeCurrency?: (currency: Currency) => unknown;
   onChangeAmount?: (amount: number | undefined) => unknown;
   onFocus?: () => unknown;
-  autoFocus?: boolean;
+  focus?: boolean;
 }) {
   const { getBalance } = useAccount();
+  const input = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (focus && input && input.current) {
+      input.current.focus();
+    }
+  }, [focus]);
 
   return (
     <div className={classNames(styles.row, className)}>
@@ -46,12 +53,13 @@ export default function CurrencyRow({
           <span className={styles.sign}>{type === 'from' ? '-' : '+'}</span>
         )}
         <CurrencyInput
+          ref={input}
           className={styles.input}
           value={amount}
           onChange={onChangeAmount}
           placeholder="0"
           onFocus={onFocus}
-          autoFocus={autoFocus}
+          autoFocus={focus}
           aria-label={`Convert ${type} amount`}
         />
       </div>

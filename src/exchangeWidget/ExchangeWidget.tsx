@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useReducer, useEffect } from 'react';
+import React, { FormEvent, useReducer, useEffect } from 'react';
 import classNames from 'classnames';
 import styles from './ExchangeWidget.module.css';
 import CtaButton from '../common/components/CtaButton';
@@ -109,13 +109,19 @@ export default function ExchangeWidget({
     }
   }, [activeBucket.amount, activeBucket.currency, inactiveBucket.currency, inactiveBucketName, exchange]);
 
-  function updateAndPreExchange(thisBucket: Bucket) {
-    const otherBucket = other(thisBucket);
+  function updateAndPreExchange(sourceBucket: Bucket) {
+    const otherBucket = other(sourceBucket);
     return (amount: number | undefined) => {
-      dispatch(actions.setAmount(thisBucket, amount));
-      if (exchange && amount) {
+      dispatch(actions.setAmount(sourceBucket, amount));
+
+      if (!amount) {
+        dispatch(actions.setAmount(otherBucket, undefined));
+        return;
+      }
+
+      if (exchange) {
         dispatch(actions.setAmount(otherBucket, exchange(amount, {
-          from: state[thisBucket].currency,
+          from: state[sourceBucket].currency,
           to: state[otherBucket].currency,
         })));
       }
@@ -143,7 +149,7 @@ export default function ExchangeWidget({
           onChangeAmount={updateAndPreExchange('from')}
           onChangeCurrency={(currency) => dispatch(actions.setCurrency('from', currency))}
           onFocus={() => dispatch(actions.setLastFocused('from'))}
-          autoFocus={state.from.lastFocused}
+          focus={state.from.lastFocused}
         />
 
         <div className={styles.middleControls}>
@@ -176,7 +182,7 @@ export default function ExchangeWidget({
           onChangeAmount={updateAndPreExchange('to')}
           onChangeCurrency={(currency) => dispatch(actions.setCurrency('to', currency))}
           onFocus={() => dispatch(actions.setLastFocused('to'))}
-          autoFocus={state.to.lastFocused}
+          focus={state.to.lastFocused}
         />
 
         <FlexSpacer />
