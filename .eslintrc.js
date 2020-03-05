@@ -12,6 +12,7 @@ module.exports = {
   ],
   "rules": {
     "max-len": ["error", { "code": 120 }],
+    "newline-per-chained-call": ["off"],
     "import/extensions": "off",
     "import/no-extraneous-dependencies": ["error", {
       "devDependencies": [

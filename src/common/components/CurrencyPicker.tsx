@@ -13,7 +13,7 @@ export default function CurrencyPicker({
   className?: string;
   value: Currency;
   onChange?: (value: Currency) => unknown;
-  selectProps?: HTMLAttributes<HTMLSelectElement>,
+  selectProps?: HTMLAttributes<HTMLSelectElement>;
 }) {
   return (
     <div className={classNames(styles.container, className)}>

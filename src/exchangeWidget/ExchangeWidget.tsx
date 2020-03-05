@@ -10,7 +10,7 @@ import { ReactComponent as IconRate } from './assets/stock.svg';
 import { renderCurrency } from './services/currencyUtils';
 import FlexSpacer from '../common/components/FlexSpacer';
 import { CURRENCIES, Currency } from '../common/constants';
-import { useLiveRates } from './services/fx';
+import { useLiveRates } from '../common/services/fx';
 
 type Bucket = 'to' | 'from';
 interface BucketData {
@@ -128,13 +128,18 @@ export default function ExchangeWidget({
     };
   }
 
-  function submitForExchange(event: FormEvent) {
+  async function submitForExchange(event: FormEvent) {
     event.preventDefault();
-    console.log('submit');
+
+    if (!state.from.amount) {
+      return;
+    }
+
+    await account.exchange(state.from.amount, { from: state.from.currency, to: state.to.currency });
   }
 
   if (!exchange) {
-    return <>Loading...</>; // TODO: loading
+    return <>Loading...</>;
   }
 
   const toCurrencyRate = exchange(1, { from: state.from.currency, to: state.to.currency });

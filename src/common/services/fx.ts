@@ -1,6 +1,5 @@
-/* eslint-disable import/prefer-default-export */
 import { useEffect, useState } from 'react';
-import { Currency } from '../../common/constants';
+import { Currency } from '../constants';
 
 const ON_RATES_EVENT = 'fx:onRates';
 type Rates = { [C in Currency]: number };
@@ -16,16 +15,18 @@ class FxRatesEvent extends Event {
   }
 }
 
+let latestRates: Rates;
+
 async function refreshRates() {
   // const response = await fetch('https://api.exchangeratesapi.io/latest?base=EUR&symbols=USD,GBP');
   // const data = await response.json();
   // rates = data.rates;
-  const rates = {
+  latestRates = {
     GBP: randomBetween(0.8, 0.9),
     USD: randomBetween(1.12, 1.16),
     EUR: 1,
   };
-  window.dispatchEvent(new FxRatesEvent(rates));
+  window.dispatchEvent(new FxRatesEvent(latestRates));
 }
 
 setInterval(refreshRates, 1000);
@@ -41,20 +42,16 @@ function unsubscribeFromLiveRates(listener: (event: FxRatesEvent) => void) {
   window.removeEventListener(ON_RATES_EVENT, listener as EventListener);
 }
 
-// export function getExchangeRate({ from, to }: { from: Currency; to: Currency }) {
-//   if (!rates) {
-//     return 0;
-//   }
-
-//   const inEur = 1 / rates[from];
-//   return inEur * rates[to];
-// }
-
 function exchangeFor(rates: Rates) {
   return function exchange(value: number, { from, to }: { from: Currency; to: Currency }) {
     const inBaseCurrency = value / rates[from];
     return inBaseCurrency * rates[to];
   };
+}
+
+export function exchangeUsingLatestRates(value: number, { from, to }: { from: Currency; to: Currency }) {
+  // this would really be inside of the API
+  return exchangeFor(latestRates)(value, { from, to });
 }
 
 export function useLiveRates() {
