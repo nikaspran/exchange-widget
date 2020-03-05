@@ -12,3 +12,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 * Tab order (currency -> value -> currency -> value)
 * FF behaving weirdly with input sizes (minus/plus sign)
 * Check for .skip
+* Validation, loading, disable inputs
