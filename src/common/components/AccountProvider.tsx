@@ -5,7 +5,7 @@ interface AccountContextType {
   getBalance(currency: Currency): number;
 }
 
-const AccountContext = React.createContext(undefined as unknown as AccountContextType);
+export const AccountContext = React.createContext(undefined as unknown as AccountContextType);
 
 export default function AccountProvider({
   children,

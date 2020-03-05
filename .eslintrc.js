@@ -13,6 +13,12 @@ module.exports = {
   "rules": {
     "max-len": ["error", { "code": 120 }],
     "import/extensions": "off",
+    "import/no-extraneous-dependencies": ["error", {
+      "devDependencies": [
+        "**/*{.,_}{test,spec}.{ts,tsx,js,jsx}"
+      ],
+      "optionalDependencies": false
+    }],
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx", ".jsx"] }],
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-props-no-spreading": "off"

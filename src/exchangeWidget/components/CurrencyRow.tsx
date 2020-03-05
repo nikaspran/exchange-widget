@@ -15,6 +15,8 @@ export default function CurrencyRow({
   type,
   onChangeCurrency,
   onChangeAmount,
+  onFocus,
+  autoFocus,
 }: {
   className?: string;
   currency: Currency;
@@ -22,20 +24,36 @@ export default function CurrencyRow({
   type: 'from' | 'to';
   onChangeCurrency?: (currency: Currency) => unknown;
   onChangeAmount?: (amount: number | undefined) => unknown;
+  onFocus?: () => unknown;
+  autoFocus?: boolean;
 }) {
   const { getBalance } = useAccount();
 
   return (
     <div className={classNames(styles.row, className)}>
       <div className={styles.top}>
-        <CurrencyPicker value={currency} onChange={onChangeCurrency} />
+        <CurrencyPicker
+          value={currency}
+          onChange={onChangeCurrency}
+          selectProps={{
+            'aria-label': `Convert ${type} currency`,
+          }}
+        />
 
         <FlexSpacer />
 
         {!!amount && (
           <span className={styles.sign}>{type === 'from' ? '-' : '+'}</span>
         )}
-        <CurrencyInput className={styles.input} value={amount} onChange={onChangeAmount} />
+        <CurrencyInput
+          className={styles.input}
+          value={amount}
+          onChange={onChangeAmount}
+          placeholder="0"
+          onFocus={onFocus}
+          autoFocus={autoFocus}
+          aria-label={`Convert ${type} amount`}
+        />
       </div>
 
       <div className={styles.balance}>

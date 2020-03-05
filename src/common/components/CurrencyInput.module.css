@@ -5,4 +5,9 @@
   font-size: var(--fontSize4Xl);
   color: var(--textDark);
   text-align: right;
+  caret-color: var(--colorAccent);
+}
+
+.input::placeholder {
+  color: var(--textLightest);
 }

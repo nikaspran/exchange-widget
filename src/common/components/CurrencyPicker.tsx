@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 import styles from './CurrencyPicker.module.css';
 import { CURRENCIES, Currency } from '../constants';
@@ -8,15 +8,18 @@ export default function CurrencyPicker({
   className,
   value,
   onChange,
+  selectProps,
 }: {
   className?: string;
   value: Currency;
   onChange?: (value: Currency) => unknown;
+  selectProps?: HTMLAttributes<HTMLSelectElement>,
 }) {
   return (
-    <div className={styles.container}>
+    <div className={classNames(styles.container, className)}>
       <select
-        className={classNames(styles.select, className)}
+        {...selectProps}
+        className={styles.select}
         value={value}
         onChange={onChange && ((e) => onChange(e.target.value as Currency))}
       >
