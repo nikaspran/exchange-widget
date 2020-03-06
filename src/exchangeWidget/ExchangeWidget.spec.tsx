@@ -56,6 +56,15 @@ describe('<ExchangeWidget />', () => {
     };
   }
 
+  it('should show a loading message while loading the exchange rates', () => {
+    useLiveRatesMock.mockReset();
+    useLiveRatesMock.mockReturnValue({ exchange: undefined });
+
+    const { getByText } = renderWidget();
+
+    expect(getByText('Loading...')).toBeInTheDocument();
+  });
+
   it('should default to EUR as the "from" currency', () => {
     const { elements } = renderWidget();
     expect(elements.fromCurrency()).toHaveValue('EUR');
@@ -79,6 +88,26 @@ describe('<ExchangeWidget />', () => {
     when(exchangeMock).calledWith(1, { from: 'EUR', to: 'GBP' }).mockReturnValue(2);
     const { getByText } = renderWidget();
     expect(getByText('€1 = £2.0000')).toBeInTheDocument();
+  });
+
+  it('should allow changing the "from" currency', () => {
+    when(accountMock.getBalance).calledWith('EUR').mockReturnValue(1000);
+    when(accountMock.getBalance).calledWith('USD').mockReturnValue(42);
+
+    const { elements, getByText } = renderWidget();
+    fireEvent.change(elements.fromCurrency(), { target: { value: 'USD' } });
+
+    expect(getByText('Balance: US$42')).toBeInTheDocument();
+  });
+
+  it('should allow changing the "to" currency', () => {
+    when(accountMock.getBalance).calledWith('EUR').mockReturnValue(1000);
+    when(accountMock.getBalance).calledWith('USD').mockReturnValue(42);
+
+    const { elements, getByText } = renderWidget();
+    fireEvent.change(elements.toCurrency(), { target: { value: 'USD' } });
+
+    expect(getByText('Balance: US$42')).toBeInTheDocument();
   });
 
   it('should allow swapping currencies', () => {
@@ -136,6 +165,16 @@ describe('<ExchangeWidget />', () => {
     const { elements } = renderWidget();
     fireEvent.click(elements.swapButton());
     expect(elements.toAmount()).toHaveFocus();
+  });
+
+  it('should prevent submission if the "from" amount is empty', () => {
+    const { elements } = renderWidget();
+    fireEvent.change(elements.fromAmount(), { target: { value: 10 } });
+    fireEvent.change(elements.fromAmount(), { target: { value: '' } });
+
+    fireEvent.click(elements.exchangeButton());
+
+    expect(accountMock.exchange).not.toHaveBeenCalled();
   });
 
   it('should allow submitting the exchange and show updated balances', () => {
