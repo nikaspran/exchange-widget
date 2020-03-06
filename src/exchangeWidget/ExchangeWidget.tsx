@@ -68,6 +68,8 @@ const actions = {
   },
 };
 
+// The reducer and supporting code could be moved to a new file for a smaller footprint
+// Instead, I opted for more encapsulation since this reducer is basically operating as local state
 function reducer(state: State, action: Actions) {
   switch (action.type) {
     case SET_AMOUNT:
