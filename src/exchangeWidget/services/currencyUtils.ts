@@ -10,6 +10,6 @@ const rendererFor = {
 export function renderCurrency(value: number, currency: Currency, { precision }: { precision?: number } = {}) {
   const preciseValue = precision === undefined ? value : value.toFixed(precision);
 
-  const render = rendererFor[currency] || (() => `${value} ${currency}`);
+  const render = rendererFor[currency] || (() => `${currency} ${value}`);
   return render(preciseValue);
 }
