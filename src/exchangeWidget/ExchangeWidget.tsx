@@ -42,7 +42,7 @@ type Actions = SetAmountAction | SetCurrencyAction | SetLastFocusedAction | Swap
 
 const initState = () => ({
   from: {
-    amount: 12,
+    amount: undefined,
     currency: CURRENCIES.EUR,
     lastFocused: true,
   },
