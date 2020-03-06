@@ -3,6 +3,9 @@ import styles from './App.module.css';
 import ExchangeWidget from './exchangeWidget/ExchangeWidget';
 import AccountProvider from './common/components/AccountProvider';
 import FlexSpacer from './common/components/FlexSpacer';
+import { startLiveRateRefresh } from './common/services/fx';
+
+startLiveRateRefresh();
 
 function App() {
   return (

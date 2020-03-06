@@ -16,6 +16,7 @@ module.exports = {
     "import/extensions": "off",
     "import/no-extraneous-dependencies": ["error", {
       "devDependencies": [
+        "**/setupTests.js",
         "**/*{.,_}{test,spec}.{ts,tsx,js,jsx}"
       ],
       "optionalDependencies": false
