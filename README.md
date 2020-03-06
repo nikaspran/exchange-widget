@@ -11,3 +11,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 * Animations and polish
 * Various edge case visual issues (i.e. out of bounds inputs)
+* CI/CD setup, see https://gitlab.com/nikaspran/nikas-2020-02-25 for an example setup
