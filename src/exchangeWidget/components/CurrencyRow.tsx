@@ -64,8 +64,12 @@ export default function CurrencyRow({
         />
       </div>
 
-      <div className={styles.balance}>
-        Balance: {renderCurrency(getBalance(currency), currency)}
+      <div
+        className={classNames(styles.balance, {
+          [styles.overdraft]: type === 'from' && amount && amount > getBalance(currency),
+        })}
+      >
+        Balance: {renderCurrency(getBalance(currency), currency, { precision: 2 })}
       </div>
     </div>
   );

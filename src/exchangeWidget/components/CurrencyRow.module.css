@@ -9,7 +9,7 @@
 @supports ( -moz-appearance: none ){ /* Firefox only */
   .sign {
     position: relative;
-    left: 2.5rem;
+    left: 1ch;
   }
 }
 
@@ -17,4 +17,8 @@
   margin-top: 1rem;
   color: var(--textLight);
   font-size: var(--fontSizeBase)
+}
+
+.overdraft {
+  color: var(--colorError);
 }

@@ -1,4 +1,9 @@
-import React, { FormEvent, useReducer, useEffect } from 'react';
+import React, {
+  FormEvent,
+  useReducer,
+  useEffect,
+  useState,
+} from 'react';
 import classNames from 'classnames';
 import styles from './ExchangeWidget.module.css';
 import CtaButton from '../common/components/CtaButton';
@@ -37,7 +42,7 @@ type Actions = SetAmountAction | SetCurrencyAction | SetLastFocusedAction | Swap
 
 const initState = () => ({
   from: {
-    amount: 12, // TODO
+    amount: 12,
     currency: CURRENCIES.EUR,
     lastFocused: true,
   },
@@ -90,10 +95,14 @@ export default function ExchangeWidget({
   const [state, dispatch] = useReducer(reducer, undefined, initState);
   const account = useAccount();
   const { exchange } = useLiveRates();
+  const [exchanging, setExchanging] = useState(false);
   const activeBucketName = state.to.lastFocused ? 'to' : 'from';
   const inactiveBucketName = other(activeBucketName);
   const activeBucket = state[activeBucketName];
   const inactiveBucket = state[inactiveBucketName];
+  const isSubmitDisabled = (
+    exchanging || !state.from.amount || state.from.amount > account.getBalance(state.from.currency)
+  );
 
   useEffect(() => {
     if (!exchange) {
@@ -131,11 +140,17 @@ export default function ExchangeWidget({
   async function submitForExchange(event: FormEvent) {
     event.preventDefault();
 
-    if (!state.from.amount) {
+    if (isSubmitDisabled) {
       return;
     }
 
-    await account.exchange(state.from.amount, { from: state.from.currency, to: state.to.currency });
+    setExchanging(true);
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await account.exchange(state.from.amount!, { from: state.from.currency, to: state.to.currency });
+    } finally {
+      setExchanging(false);
+    }
   }
 
   if (!exchange) {
@@ -144,7 +159,11 @@ export default function ExchangeWidget({
 
   const toCurrencyRate = exchange(1, { from: state.from.currency, to: state.to.currency });
   return (
-    <form className={classNames(styles.container, className)} onSubmit={submitForExchange}>
+    <form
+      className={classNames(styles.container, className)}
+      onSubmit={submitForExchange}
+      aria-label="Exchange Currency Widget"
+    >
       <div className={styles.top}>
         <CurrencyRow
           type="from"
@@ -192,7 +211,7 @@ export default function ExchangeWidget({
 
         <FlexSpacer />
 
-        <CtaButton type="submit" className={styles.cta}>Exchange</CtaButton>
+        <CtaButton type="submit" className={styles.cta} disabled={isSubmitDisabled}>Exchange</CtaButton>
       </div>
     </form>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { when } from 'jest-when';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitForDomChange } from '@testing-library/react';
 import ExchangeWidget from './ExchangeWidget';
 import { useLiveRates } from '../common/services/fx';
 import { useAccount } from '../common/components/AccountProvider';
@@ -26,6 +26,7 @@ describe('<ExchangeWidget />', () => {
   beforeEach(() => {
     accountMock.exchange.mockReset();
     accountMock.getBalance.mockReset();
+    accountMock.getBalance.mockReturnValue(100);
 
     useAccountMock.mockReset();
     useAccountMock.mockReturnValue(accountMock);
@@ -46,6 +47,7 @@ describe('<ExchangeWidget />', () => {
       ...utils,
       rerender: () => utils.rerender(<ExchangeWidget />),
       elements: {
+        form: () => utils.getByLabelText('Exchange Currency Widget') as HTMLFormElement,
         swapButton: () => utils.getByLabelText('Swap currencies') as HTMLButtonElement,
         exchangeButton: () => utils.getByText('Exchange') as HTMLButtonElement,
         fromCurrency: () => utils.getByLabelText('Convert from currency') as HTMLSelectElement,
@@ -85,9 +87,9 @@ describe('<ExchangeWidget />', () => {
   });
 
   it('should show a currency exchange rate', () => {
-    when(exchangeMock).calledWith(1, { from: 'EUR', to: 'GBP' }).mockReturnValue(2);
+    when(exchangeMock).calledWith(1, { from: 'EUR', to: 'GBP' }).mockReturnValue(2.25);
     const { getByText } = renderWidget();
-    expect(getByText('€1 = £2.0000')).toBeInTheDocument();
+    expect(getByText('€1 = £2.2500')).toBeInTheDocument();
   });
 
   it('should allow changing the "from" currency', () => {
@@ -177,7 +179,29 @@ describe('<ExchangeWidget />', () => {
     expect(accountMock.exchange).not.toHaveBeenCalled();
   });
 
-  it('should allow submitting the exchange and show updated balances', () => {
+  it('should prevent a submission if trying to convert more than account balance', () => {
+    when(accountMock.getBalance).calledWith('EUR').mockReturnValue(10);
+
+    const { elements } = renderWidget();
+    fireEvent.change(elements.fromAmount(), { target: { value: 20 } });
+
+    fireEvent.submit(elements.form());
+
+    expect(accountMock.exchange).not.toHaveBeenCalled();
+  });
+
+  it('should prevent a double submission', async () => {
+    const { elements } = renderWidget();
+    fireEvent.change(elements.fromAmount(), { target: { value: 10 } });
+
+    fireEvent.click(elements.exchangeButton());
+    fireEvent.click(elements.exchangeButton());
+    await waitForDomChange();
+
+    expect(accountMock.exchange).toHaveBeenCalledTimes(1);
+  });
+
+  it('should allow submitting the exchange and show updated balances', async () => {
     when(accountMock.getBalance).calledWith('EUR').mockReturnValue(100);
     when(accountMock.getBalance).calledWith('GBP').mockReturnValue(200);
 
@@ -191,12 +215,12 @@ describe('<ExchangeWidget />', () => {
       when(accountMock.getBalance).calledWith('GBP').mockReturnValue(250);
     });
 
-    const { elements, getByText, rerender } = renderWidget();
+    const { elements, getByText } = renderWidget();
     fireEvent.change(elements.fromAmount(), { target: { value: 10 } });
 
     fireEvent.click(elements.exchangeButton());
 
-    rerender();
+    await waitForDomChange();
 
     expect(getByText('Balance: €90')).toBeInTheDocument();
     expect(getByText('Balance: £250')).toBeInTheDocument();

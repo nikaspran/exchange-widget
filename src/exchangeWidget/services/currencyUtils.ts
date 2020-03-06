@@ -8,7 +8,7 @@ const rendererFor = {
 };
 
 export function renderCurrency(value: number, currency: Currency, { precision }: { precision?: number } = {}) {
-  const preciseValue = precision === undefined ? value : value.toFixed(precision);
+  const preciseValue = precision === undefined ? value : value.toFixed(precision).replace(/\.0+$/, '');
 
   const render = rendererFor[currency] || (() => `${currency} ${value}`);
   return render(preciseValue);
