@@ -1,0 +1,17 @@
+.button {
+  background: var(--backgroundCta);
+  color: #ffffff;
+  padding: .8rem;
+  border: none;
+  border-radius: 100rem; /* absurd value makes corners round for pill-like look */
+  cursor: pointer;
+
+  font-size: var(--fontSizeLg);
+  font-weight: 600;
+
+  box-shadow: 0px 5px 5px 0px rgba(210,0,126,0.15);
+}
+
+.button:disabled {
+  opacity: .5;
+}

@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.select {
+  cursor: pointer;
+  appearance: none;
+  border: none;
+  background: transparent;
+
+  font-size: var(--fontSize4Xl);
+  padding-right: 1.4rem;
+  color: var(--textDark);
+}
+
+.select option {
+  font-size: var(--fontSizeBase);
+}
+
+.caret {
+  height: 8px;
+  width: auto;
+  position: absolute;
+  right: 0;
+  pointer-events: none;
+  fill: var(--textDark);
+}
+

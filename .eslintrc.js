@@ -11,8 +11,19 @@ module.exports = {
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
+    "max-len": ["error", { "code": 120 }],
+    "newline-per-chained-call": ["off"],
     "import/extensions": "off",
-    "react/jsx-filename-extension": ["error", { "extensions": [".tsx", ".jsx"] }]
+    "import/no-extraneous-dependencies": ["error", {
+      "devDependencies": [
+        "**/setupTests.js",
+        "**/*{.,_}{test,spec}.{ts,tsx,js,jsx}"
+      ],
+      "optionalDependencies": false
+    }],
+    "react/jsx-filename-extension": ["error", { "extensions": [".tsx", ".jsx"] }],
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-props-no-spreading": "off"
   },
   "overrides": [
     {
